@@ -14,7 +14,7 @@ export default class Camera {
     this.scene = this.experience.scene;
 
     // Set up
-    this.mode = "debug"; // defaultCamera \ debugCamera
+    this.mode = "default"; // defaultCamera \ debugCamera
 
     this.setInstance();
     this.setModes();
@@ -24,6 +24,9 @@ export default class Camera {
     // Set up
     this.instance = new THREE.PerspectiveCamera(25, this.config.width / this.config.height, 0.1, 350);
     this.instance.rotation.reorder("YXZ");
+
+    this.instance.position.set(0, 1.5, 20);
+    // this.instance.rotation.x = 0.1;
 
     this.scene.add(this.instance);
   }
@@ -40,7 +43,8 @@ export default class Camera {
     this.modes.debug = {};
     this.modes.debug.instance = this.instance.clone();
     this.modes.debug.instance.rotation.reorder("YXZ");
-    this.modes.debug.instance.position.set(0, 1.5, 20);
+    // this.modes.debug.instance.position.set(0, 1.5, 20);
+    // this.modes.debug.instance.position.set(0, 1.5, 10);
 
     this.modes.debug.orbitControls = new OrbitControls(this.modes.debug.instance, this.targetElement);
     this.modes.debug.orbitControls.enabled = this.modes.debug.active;

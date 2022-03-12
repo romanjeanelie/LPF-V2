@@ -15,7 +15,7 @@ export default class Triangle {
 
     this.setGeometry();
     this.setMaterial();
-    this.setTriangle();
+    this.setMesh();
     this.setPointLight();
   }
 
@@ -27,22 +27,22 @@ export default class Triangle {
     this.material = new THREE.MeshBasicMaterial({ color: "white" });
   }
 
-  setTriangle() {
-    this.triangle = new THREE.Mesh(this.geometry, this.material);
+  setMesh() {
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
 
-    this.triangle.position.y = 7;
-    this.triangle.position.z = -50;
+    this.mesh.position.y = 7;
+    this.mesh.position.z = -50;
 
-    this.triangle.rotation.x = -0.292;
-    this.triangle.rotation.y = 0.624;
-    this.triangle.rotation.z = -0.088;
-    this.scene.add(this.triangle);
+    this.mesh.rotation.x = -0.292;
+    this.mesh.rotation.y = 0.624;
+    this.mesh.rotation.z = -0.088;
+    this.scene.add(this.mesh);
 
     // Debug
     if (this.debug) {
-      this.debugFolder.add(this.triangle.rotation, "x", -2, 2);
-      this.debugFolder.add(this.triangle.rotation, "y", -2, 2);
-      this.debugFolder.add(this.triangle.rotation, "z", -2, 2);
+      this.debugFolder.add(this.mesh.rotation, "x", -2, 2);
+      this.debugFolder.add(this.mesh.rotation, "y", -2, 2);
+      this.debugFolder.add(this.mesh.rotation, "z", -2, 2);
     }
   }
 
@@ -70,5 +70,10 @@ export default class Triangle {
     }
 
     this.scene.add(this.pointLight.instance);
+  }
+
+  update() {
+    // this.triangle.rotation.x += 0.001;
+    // this.triangle.rotation.z += 0.005;
   }
 }
