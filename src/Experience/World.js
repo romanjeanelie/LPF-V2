@@ -71,32 +71,32 @@ export default class World {
 
     gsap.to(this.camera.modes.default.instance.position, {
       z: 20,
-      duration: 10,
+      duration: 5,
     });
     gsap.to(this.camera.modes.default.instance.rotation, {
       x: 0,
-      duration: 10,
+      duration: 5,
       ease: "power2.inOut",
     });
 
     gsap.to(this.triangle.mesh.position, {
       y: 7,
       z: -50,
-      duration: 10,
-      delay: 6,
+      duration: 5,
+      delay: 3,
       ease: "power2.out",
     });
 
     gsap.to(this.triangle.mesh.rotation, {
       x: -0.292,
-      duration: 25,
-      delay: 6,
+      duration: 7,
+      delay: 3,
       ease: "power2.inOut",
     });
 
     gsap.to(this.lights.pointLight.instance.position, {
       z: -28,
-      duration: 15,
+      duration: 10,
     });
   }
 

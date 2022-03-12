@@ -22,7 +22,7 @@ export default class Lights {
     this.pointLight.color = "#0f2048";
 
     // Instance
-    this.pointLight.instance = new THREE.PointLight(this.pointLight.color, 608, 0, 2.38);
+    this.pointLight.instance = new THREE.PointLight(this.pointLight.color, 164, 0, 2.38);
     this.pointLight.instance.position.y = 7.7;
     this.pointLight.instance.position.z = -28;
 

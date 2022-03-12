@@ -49,7 +49,7 @@ export default class Human {
 
   update() {
     if (this.mixer) {
-      this.mixer.update(0.02);
+      this.mixer.update(this.time.elapsed);
     }
   }
 }
