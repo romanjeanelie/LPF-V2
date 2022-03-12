@@ -19,7 +19,7 @@ export default class Lights {
   setRedPointLight() {
     // Setup
     this.pointLight = {};
-    this.pointLight.color = "#2c0707";
+    this.pointLight.color = "#0f2048";
 
     // Instance
     this.pointLight.instance = new THREE.PointLight(this.pointLight.color, 608, 0, 2.38);

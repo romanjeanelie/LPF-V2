@@ -8,6 +8,8 @@ export default class Triangle {
     this.scene = this.experience.scene;
     this.time = this.experience.time;
 
+    this.isPlaced = false;
+
     if (this.debug) {
       this.debugFolder = this.debug.addFolder("triangle");
       this.debugFolder.close();
@@ -73,7 +75,9 @@ export default class Triangle {
   }
 
   update() {
-    // this.triangle.rotation.x += 0.001;
-    // this.triangle.rotation.z += 0.005;
+    if (this.isPlaced) {
+      console.log(Math.sin(this.time.elapsed * 0.001) * 10);
+      this.mesh.position.y = Math.sin(this.time.elapsed * 0.001) * 10;
+    }
   }
 }

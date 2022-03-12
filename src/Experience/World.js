@@ -62,29 +62,41 @@ export default class World {
 
   start() {
     if (this.triangle) {
-      this.triangle.mesh.position.y = 20;
-      this.triangle.mesh.position.z = 20;
-
-      this.triangle.mesh.rotation.x = -10;
+      this.triangle.mesh.position.y = 40;
+      this.triangle.mesh.position.z = -50;
     }
     this.camera.modes.default.instance.lookAt(this.triangle.mesh.position);
+
+    this.lights.pointLight.instance.position.z = 40;
+
+    gsap.to(this.camera.modes.default.instance.position, {
+      z: 20,
+      duration: 10,
+    });
+    gsap.to(this.camera.modes.default.instance.rotation, {
+      x: 0,
+      duration: 10,
+      ease: "power2.inOut",
+    });
 
     gsap.to(this.triangle.mesh.position, {
       y: 7,
       z: -50,
-      duration: 15,
-      delay: 3,
-      onUpdate: () => {
-        this.camera.modes.default.instance.lookAt(this.triangle.mesh.position);
-      },
+      duration: 10,
+      delay: 6,
       ease: "power2.out",
     });
 
     gsap.to(this.triangle.mesh.rotation, {
       x: -0.292,
-      duration: 16,
-      delay: 3,
+      duration: 25,
+      delay: 6,
       ease: "power2.inOut",
+    });
+
+    gsap.to(this.lights.pointLight.instance.position, {
+      z: -28,
+      duration: 15,
     });
   }
 
