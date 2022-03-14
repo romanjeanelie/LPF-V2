@@ -35,6 +35,7 @@ export default class Experience {
     this.setDebug();
     this.setStats();
     this.setScene();
+    this.setTextScene();
     this.setCamera();
     this.setRenderer();
     this.setResources();
@@ -76,6 +77,10 @@ export default class Experience {
 
   setScene() {
     this.scene = new THREE.Scene();
+  }
+
+  setTextScene() {
+    this.textScene = new THREE.Scene();
   }
 
   setCamera() {

@@ -5,6 +5,7 @@ import Ground from "./Ground.js";
 import Wall from "./Wall.js";
 import Human from "./Human.js";
 import Lights from "./Lights.js";
+import Texts from "./Texts.js";
 
 import { gsap } from "gsap";
 
@@ -13,6 +14,7 @@ export default class World {
     this.experience = new Experience();
     this.config = this.experience.config;
     this.scene = this.experience.scene;
+    this.textScene = this.experience.textScene;
     this.resources = this.experience.resources;
     this.camera = this.experience.camera;
 
@@ -23,8 +25,9 @@ export default class World {
         this.setWall();
         this.setHuman();
         this.setLights();
+        this.setTexts();
 
-        this.start();
+        // this.start();
       }
     });
   }
@@ -47,6 +50,10 @@ export default class World {
 
   setLights() {
     this.lights = new Lights();
+  }
+
+  setTexts() {
+    this.texts = new Texts();
   }
 
   resize() {}

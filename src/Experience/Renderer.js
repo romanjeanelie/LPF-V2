@@ -99,7 +99,7 @@ export default class Renderer {
       new THREE.Vector2(this.sizes.width, this.sizes.height),
       0.78,
       0.14,
-      0.3
+      0.914
     );
     this.postProcess.unrealBloomPass.enabled = true;
 
