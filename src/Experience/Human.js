@@ -38,9 +38,8 @@ export default class Human {
     const actions = this.resources.items.human.animations.map((animation) => this.mixer.clipAction(animation));
     actions.forEach((action) => {
       action.play();
-      console.log(action);
       //   action.setDuration(1);
-      action.setLoop(THREE.LoopPingPong, 0);
+      action.setLoop(THREE.LoopRepeat, 0);
       //   action.clampWhenFinished = true;
     });
 

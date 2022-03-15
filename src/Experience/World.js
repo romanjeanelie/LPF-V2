@@ -27,7 +27,7 @@ export default class World {
         this.setLights();
         this.setTexts();
 
-        // this.start();
+        this.start();
       }
     });
   }
@@ -64,6 +64,10 @@ export default class World {
     }
     if (this.human) {
       this.human.update();
+    }
+
+    if (this.texts) {
+      this.texts.update();
     }
   }
 

@@ -76,7 +76,6 @@ export default class Triangle {
 
   update() {
     if (this.isPlaced) {
-      console.log(Math.sin(this.time.elapsed * 0.001) * 10);
       this.mesh.position.y = Math.sin(this.time.elapsed * 0.001) * 10;
     }
   }

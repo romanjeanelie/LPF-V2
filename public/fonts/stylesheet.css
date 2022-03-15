@@ -1,0 +1,31 @@
+@font-face {
+  font-family: "gover";
+  src: url("gover.woff2") format("woff2"), url("gover.woff") format("woff");
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "league-gothic";
+  src: url("LeagueGothic-Regular.woff2") format("woff2"), url("LeagueGothic-Regular.woff") format("woff");
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "league-gothic";
+  src: url("LeagueGothic-Italic.woff2") format("woff2"), url("LeagueGothic-Italic.woff") format("woff");
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "league-gothic condensed";
+  src: url("LeagueGothic-Condensed.woff2") format("woff2"), url("LeagueGothic-Condensed.woff") format("woff");
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "league-gothic condensed";
+  src: url("LeagueGothic-CondensedItalic.woff2") format("woff2"),
+    url("LeagueGothic-CondensedItalic.woff") format("woff");
+  font-style: italic;
+  font-display: swap;
+}
