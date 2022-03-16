@@ -27,7 +27,7 @@ export default class World {
         this.setLights();
         this.setTexts();
 
-        this.start();
+        // this.setIntro();
       }
     });
   }
@@ -71,7 +71,7 @@ export default class World {
     }
   }
 
-  start() {
+  setIntro() {
     if (this.triangle) {
       this.triangle.mesh.position.y = 40;
       this.triangle.mesh.position.z = -50;

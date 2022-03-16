@@ -110,3 +110,42 @@ nav {
     }
   }
 }
+
+.control-times {
+  position: fixed;
+  top: 50%;
+  right: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  span {
+    display: block;
+  }
+  .line {
+    background: #ccc;
+
+    width: 30px;
+    height: 2px;
+
+    transition: height 300ms, margin 300ms;
+
+    &.active {
+      height: 5px;
+      margin: 6px 0;
+    }
+  }
+  .cursor {
+    position: absolute;
+    margin-top: 16px;
+    top: 0;
+    right: -20px;
+    transform: translateY(-100%);
+
+    transition: transform 300ms ease-out;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+}

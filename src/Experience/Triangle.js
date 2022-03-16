@@ -18,7 +18,7 @@ export default class Triangle {
     this.setGeometry();
     this.setMaterial();
     this.setMesh();
-    this.setPointLight();
+    // this.setPointLight();
   }
 
   setGeometry() {

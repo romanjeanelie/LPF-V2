@@ -1,5 +1,6 @@
 varying vec2 vUv; 
 uniform float uTime; 
+uniform float uHover; 
 
 vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
 
@@ -40,8 +41,8 @@ float cnoise(vec2 P){
 
 void main() {
     vec3 newPosition = position;
-    newPosition.x += cnoise(vec2(uv.y * 10., uTime* 0.001)) * 0.05;
-    newPosition.y += cnoise(vec2(uv.x * 10., uTime* 0.0001)) * 0.1;
+    newPosition.x += cnoise(vec2(uv.y * 10., uTime* 0.001)) * 0.05 * uHover;
+    newPosition.y += cnoise(vec2(uv.x * 10., uTime* 0.0001)) * 0.1 * uHover;
     // newPosition.y += cnoise(vec2(uv.x * 1000., sin(uTime * 0.0001) ));
     // newPosition.y += cnoise(vec2(uv.y * 100., uTime * 0.0001));
     gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.);

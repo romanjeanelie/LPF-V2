@@ -34,6 +34,10 @@ export default class Texts {
     this.textMeshes = [];
     this.mouse = new THREE.Vector2();
 
+    // DOM Elements
+    this.timeLines = document.querySelectorAll(".control-times .line");
+    this.cursorEl = document.querySelector(".control-times .cursor");
+
     if (this.debug) {
       this.debugFolder = this.debug.addFolder("Text");
       this.debugFolder.close();
@@ -43,6 +47,8 @@ export default class Texts {
     this.setRaycaster();
     this.setMaterial();
     this.setText();
+
+    this.setListeners();
   }
 
   setMouse() {
@@ -84,18 +90,25 @@ export default class Texts {
     const positionX = 3.8;
     const positionY = 4.5;
     const margin = 1.6;
-    // Create:
+
+    // Create
     times.forEach((time, i) => {
       const textMesh = new Text();
       this.scene.add(textMesh);
 
       textMesh.text = time.label;
+      textMesh.name = i;
       textMesh.font = "fonts/LeagueGothic-Regular.woff";
       textMesh.fontSize = 1.4;
       textMesh.position.y = positionY - i * margin;
       textMesh.position.x = positionX;
       textMesh.color = textColor;
       textMesh.glyphGeometryDetail = 10;
+      textMesh.fillOpacity = 0.01;
+      textMesh.strokeWidth = 0.01;
+      textMesh.strokeOpacity = 1;
+      textMesh.strokeColor = textColor;
+      textMesh.fillColor = textColor;
 
       this.textMeshes.push(textMesh);
 
@@ -104,31 +117,69 @@ export default class Texts {
     });
   }
 
-  addTextMeshThree(font, text) {
-    const textGeometry = new TextGeometry(text, {
-      font: font,
-      size: 3,
-      height: 0,
-      curveSegments: 10,
-      bevelEnabled: false,
-    });
+  // addTextMeshThree(font, text) {
+  //   const textGeometry = new TextGeometry(text, {
+  //     font: font,
+  //     size: 3,
+  //     height: 0,
+  //     curveSegments: 10,
+  //     bevelEnabled: false,
+  //   });
 
-    textGeometry.center();
-    const textMesh = new THREE.Mesh(textGeometry, this.material);
-    this.textMeshes.push(textMesh);
+  //   textGeometry.center();
+  //   const textMesh = new THREE.Mesh(textGeometry, this.material);
+  //   this.textMeshes.push(textMesh);
+  // }
+
+  setListeners() {
+    this.timeLines.forEach((line, i) => {
+      line.addEventListener("mouseenter", () => {
+        this.updateControls(i);
+        this.updateTextMeshes(i);
+      });
+    });
+  }
+
+  updateTextMeshes(index) {
+    // Reset
+    this.textMeshes.forEach((textMesh) => {
+      textMesh.fillOpacity = 0.01;
+    });
+    this.textMeshes[index].fillOpacity = 1;
+  }
+
+  updateControls(index) {
+    const offsetCursor = 12;
+
+    // Reset lines
+    this.timeLines.forEach((line) => line.classList.remove("active"));
+
+    this.timeLines[index].classList.add("active");
+    this.cursorEl.style.transform = `translateY(calc(-100% +  ${offsetCursor * index}px))`;
   }
 
   update() {
+    // Update time
+    for (const textMesh of this.textMeshes) {
+      textMesh.material.uniforms.uTime.value = this.time.elapsed;
+    }
+
+    // Raycaster
     this.raycaster.setFromCamera(this.mouse, this.camera);
 
     const objectsToTest = this.textMeshes;
     const intersects = this.raycaster.intersectObjects(objectsToTest);
 
-    for (const intersect of intersects) {
-      // intersect.object.material.uniforms.uHover.value = 1;
+    if (intersects.length) {
+      document.body.style.cursor = "pointer";
+    } else {
+      document.body.style.cursor = "inherit";
     }
-    for (const textMesh of this.textMeshes) {
-      textMesh.material.uniforms.uTime.value = this.time.elapsed;
+
+    for (const intersect of intersects) {
+      const index = Number(intersect.object.name);
+      this.updateControls(index);
+      this.updateTextMeshes(index);
     }
   }
 }
