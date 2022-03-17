@@ -18,6 +18,9 @@ export default class World {
     this.resources = this.experience.resources;
     this.camera = this.experience.camera;
 
+    // DOM Elements
+    this.controlTimesEl = document.querySelector(".control-times");
+
     this.resources.on("groupEnd", (_group) => {
       if (_group.name === "base") {
         this.setTriangle();
@@ -27,7 +30,7 @@ export default class World {
         this.setLights();
         this.setTexts();
 
-        this.setIntro();
+        // this.setIntro();
       }
     });
   }
@@ -54,6 +57,10 @@ export default class World {
 
   setTexts() {
     this.texts = new Texts();
+
+    this.texts.on("colorChange", (color) => {
+      this.lights.pointLight.instance.color.set(color);
+    });
   }
 
   resize() {}
@@ -88,6 +95,9 @@ export default class World {
       x: 0,
       duration: 5,
       ease: "power2.inOut",
+      onComplete: () => {
+        this.controlTimesEl.classList.add("active");
+      },
     });
 
     gsap.to(this.triangle.mesh.position, {

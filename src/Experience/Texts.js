@@ -7,20 +7,26 @@ import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import vertex from "./shaders/text/vertex.glsl";
 import fragment from "./shaders/text/fragment.glsl";
 
+import { gsap } from "gsap";
+
+import EventEmitter from "./Utils/EventEmitter";
+
 const times = [
-  { label: "22H", link: "www.google.fr" },
-  { label: "23H", link: "www.google.fr" },
-  { label: "00H", link: "www.google.fr" },
-  { label: "01H", link: "www.google.fr" },
-  { label: "02H", link: "www.google.fr" },
-  { label: "03H", link: "www.google.fr" },
-  { label: "04H", link: "www.google.fr" },
-  { label: "05H", link: "www.google.fr" },
-  { label: "06H", link: "www.google.fr" },
+  { label: "22H", link: "www.google.fr", color: 0xd5eef8 },
+  { label: "23H", link: "www.google.fr", color: "#db7139" },
+  { label: "00H", link: "www.google.fr", color: "#e048f4" },
+  { label: "01H", link: "www.google.fr", color: "#84e6c0" },
+  { label: "02H", link: "www.google.fr", color: "#8490e6" },
+  { label: "03H", link: "www.google.fr", color: "#1714d2" },
+  { label: "04H", link: "www.google.fr", color: "#ff80e8" },
+  { label: "05H", link: "www.google.fr", color: "#fffb8f" },
+  { label: "06H", link: "www.google.fr", color: "#a6ff80" },
 ];
 
-export default class Texts {
+export default class Texts extends EventEmitter {
   constructor() {
+    super();
+
     this.experience = new Experience();
     this.debug = this.experience.debug;
     this.scene = this.experience.scene;
@@ -33,19 +39,24 @@ export default class Texts {
 
     this.textMeshes = [];
     this.mouse = new THREE.Vector2();
+    this.activeTimeIndex = null;
+
+    // Raycaster
+    this.raycaster = new THREE.Raycaster();
 
     // DOM Elements
     this.timeLines = document.querySelectorAll(".control-times .line");
     this.cursorEl = document.querySelector(".control-times .cursor");
 
+    this.textColor = { value: 0xd5eef8 };
+
     if (this.debug) {
       this.debugFolder = this.debug.addFolder("Text");
-      this.debugFolder.close();
+      // this.debugFolder.close();
+      this.setDebug();
     }
 
     this.setMouse();
-    this.setRaycaster();
-    this.setMaterial();
     this.setText();
 
     this.setListeners();
@@ -58,35 +69,27 @@ export default class Texts {
     });
   }
 
-  setRaycaster() {
-    this.raycaster = new THREE.Raycaster();
-    let currentIntersect = null;
-  }
-
   setMaterial() {
-    this.material = new THREE.ShaderMaterial({
+    const material = new THREE.ShaderMaterial({
       vertexShader: vertex,
       fragmentShader: fragment,
       uniforms: {
         uTime: { value: this.time.elapsed },
         uHover: { value: 0 },
+        uColor: { value: new THREE.Color(0xd5eef8) },
       },
       depthTest: false,
+      needsUpdate: true,
       // wireframe: true,
     });
+    return material;
   }
 
   setText() {
     this.addTextMesh();
-    // this.loader.load("/fonts/Moniqa-Display_Bold.json", (font) => {
-    //   times.forEach((time) => {
-    //     this.addTextMeshThree(font, time.label);
-    //   });
-    // });
   }
 
   addTextMesh() {
-    const textColor = 0xd5eef8;
     const positionX = 3.8;
     const positionY = 4.5;
     const margin = 1.6;
@@ -102,18 +105,16 @@ export default class Texts {
       textMesh.fontSize = 1.4;
       textMesh.position.y = positionY - i * margin;
       textMesh.position.x = positionX;
-      textMesh.color = textColor;
       textMesh.glyphGeometryDetail = 10;
       textMesh.fillOpacity = 0.01;
       textMesh.strokeWidth = 0.01;
       textMesh.strokeOpacity = 1;
-      textMesh.strokeColor = textColor;
-      textMesh.fillColor = textColor;
+      textMesh.strokeColor = this.textColor.value;
 
       this.textMeshes.push(textMesh);
 
       textMesh.sync();
-      textMesh.material = this.material;
+      textMesh.material = this.setMaterial();
     });
   }
 
@@ -131,24 +132,105 @@ export default class Texts {
   //   this.textMeshes.push(textMesh);
   // }
 
-  setListeners() {
-    this.timeLines.forEach((line, i) => {
-      line.addEventListener("mouseenter", () => {
-        this.updateControls(i);
-        this.updateTextMeshes(i);
+  setDebug() {
+    this.debugFolder.addColor(this.textColor, "value").onChange((color) => {
+      this.textMeshes.forEach((textMesh) => {
+        textMesh.strokeColor = color;
+        textMesh.material.uniforms.uColor.value = new THREE.Color(color);
       });
     });
   }
 
-  updateTextMeshes(index) {
-    // Reset
-    this.textMeshes.forEach((textMesh) => {
-      textMesh.fillOpacity = 0.01;
+  setListeners() {
+    // Mouse Enter
+    this.timeLines.forEach((line, i) => {
+      line.addEventListener("mouseenter", () => {
+        this.activeTimeLine(i);
+        this.activeTextMesh(i);
+      });
     });
-    this.textMeshes[index].fillOpacity = 1;
+
+    // Scroll
+    window.addEventListener("wheel", (e) => this.updateScroll(e.deltaY));
+    this.isAnimating = false;
+    this.factorParallax = 2;
   }
 
-  updateControls(index) {
+  updateScroll(deltaY) {
+    this.textMeshes.forEach((textMesh) => {
+      const index = Number(textMesh.name);
+      const min = -8;
+      const max = 1;
+
+      textMesh.position.y += deltaY * 0.003;
+
+      // Parallax
+      // if (this.isAnimating) return;
+      // gsap.to(textMesh.position, {
+      //   y: `+=${this.textMeshes.length - index * 0.1}`,
+      //   duration: 2,
+      //   onStart: () => (this.isAnimating = true),
+      // });
+      // gsap.to(textMesh.position, {
+      //   y: `+=0`,
+      //   onComplete: () => (this.isAnimating = false),
+      // });
+    });
+  }
+
+  activeTextMesh(index) {
+    const color = new THREE.Color(times[index].color);
+    this.trigger("colorChange", [times[index].color]);
+
+    // Reset
+    this.textMeshes.forEach((textMesh) => {
+      gsap.killTweensOf([textMesh.material.uniforms.uHover, textMesh]);
+      gsap.to(textMesh, {
+        fillOpacity: 0.01,
+      });
+      gsap.to(textMesh.material.uniforms.uHover, {
+        value: 0,
+      });
+
+      // Color
+      textMesh.strokeColor = color;
+
+      gsap.to(textMesh.material.uniforms.uColor.value, {
+        r: color.r,
+        g: color.g,
+        b: color.b,
+      });
+    });
+
+    const tl = gsap.timeline();
+
+    tl.to(this.textMeshes[index].material.uniforms.uHover, {
+      value: 0.8,
+      duration: 0.4,
+    });
+
+    tl.to(
+      this.textMeshes[index],
+      {
+        fillOpacity: 1,
+        duration: 2,
+      },
+      "<"
+    );
+
+    tl.to(
+      this.textMeshes[index].material.uniforms.uHover,
+      {
+        value: 0,
+        delay: 0.2,
+        duration: 1,
+        ease: "power2.in",
+      },
+      "<"
+    );
+  }
+
+  activeTimeLine(index) {
     const offsetCursor = 12;
 
     // Reset lines
@@ -178,8 +260,10 @@ export default class Texts {
 
     for (const intersect of intersects) {
       const index = Number(intersect.object.name);
-      this.updateControls(index);
-      this.updateTextMeshes(index);
+      if (index === this.activeTimeIndex) return;
+      this.activeTimeIndex = index;
+      this.activeTimeLine(this.activeTimeIndex);
+      this.activeTextMesh(this.activeTimeIndex);
     }
   }
 }

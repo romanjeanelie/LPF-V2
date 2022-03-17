@@ -13,10 +13,10 @@ export default class Lights {
       // this.debugFolder.close();
     }
 
-    this.setRedPointLight();
+    this.setPointLight();
   }
 
-  setRedPointLight() {
+  setPointLight() {
     // Setup
     this.pointLight = {};
     this.pointLight.color = "#0f2048";
