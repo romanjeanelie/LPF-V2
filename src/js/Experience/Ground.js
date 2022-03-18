@@ -14,15 +14,8 @@ export default class Ground {
       this.debugFolder.close();
     }
 
-    // this.setGeometry();
     this.setMaterial();
-    // this.setMesh();
     this.setModel();
-    // this.setDummy();
-  }
-
-  setGeometry() {
-    this.geometry = new THREE.PlaneGeometry(1, 1);
   }
 
   setMaterial() {
@@ -51,27 +44,6 @@ export default class Ground {
     }
   }
 
-  setMesh() {
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
-
-    this.mesh.scale.set(30, 30, 1);
-
-    this.mesh.position.y = -3;
-    this.mesh.position.z = -5;
-
-    this.mesh.rotation.x = -1.5;
-    this.scene.add(this.mesh);
-
-    // Debug
-    if (this.debug) {
-      this.debugFolder.add(this.mesh.position, "x", -2, 2);
-      this.debugFolder.add(this.mesh.position, "y", -2, 2);
-      this.debugFolder.add(this.mesh.position, "z", -2, 2);
-      this.debugFolder.add(this.mesh.rotation, "x", -2, 2);
-      this.debugFolder.add(this.mesh.rotation, "y", -2, 2);
-      this.debugFolder.add(this.mesh.rotation, "z", -2, 2);
-    }
-  }
   setModel() {
     this.model = {};
     // // Add the model
@@ -89,16 +61,5 @@ export default class Ground {
     this.model.group.position.z = -30;
 
     this.scene.add(this.model.group);
-  }
-
-  setDummy() {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshBasicMaterial({ color: "red" });
-    this.dummy = new THREE.Mesh(geometry, material);
-    this.dummy.position.x = -2;
-    this.dummy.position.y = 0.4;
-    this.dummy.castShadow = true;
-    // this.dummy.receiveShadow = true;
-    this.scene.add(this.dummy);
   }
 }

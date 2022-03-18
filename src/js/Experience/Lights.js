@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import Experience from "./Experience";
+import { gsap } from "gsap";
 
 export default class Lights {
   constructor() {
@@ -36,12 +37,19 @@ export default class Lights {
     // Helper
     this.pointLight.helper = new THREE.PointLightHelper(this.pointLight.instance, 0.1);
     this.pointLight.helper.visible = false;
-    this.scene.add(this.pointLight.helper);
+    // this.scene.add(this.pointLight.helper);
+
+    document.pointLight = {
+      position: this.pointLight.instance.position,
+      intensity: this.pointLight.instance.intensity,
+      decay: this.pointLight.instance.decay,
+      color: this.pointLight.instance.color,
+    };
 
     // Debug
     if (this.debug) {
-      this.debugFolder.add(this.pointLight.instance.shadow, "normalBias", -0.5, 0.5);
-      this.debugFolder.add(this.pointLight.instance.shadow, "bias", -0.5, 0.5);
+      // this.debugFolder.add(this.pointLight.instance.shadow, "normalBias", -0.5, 0.5);
+      // this.debugFolder.add(this.pointLight.instance.shadow, "bias", -0.5, 0.5);
       this.debugFolder.add(this.pointLight.instance.position, "x", -5, 5);
       this.debugFolder.add(this.pointLight.instance.position, "y", -5, 20);
       this.debugFolder.add(this.pointLight.instance.position, "z", -45, 50);
@@ -53,5 +61,44 @@ export default class Lights {
     }
 
     this.scene.add(this.pointLight.instance);
+  }
+
+  updateScript(light) {
+    // Position
+    gsap.to(this.pointLight.instance.position, {
+      x: light.position.x,
+      y: light.position.y,
+      z: light.position.z,
+      duration: 1,
+    });
+
+    // Intensity
+    gsap.to(this.pointLight.instance, {
+      intensity: light.intensity,
+      decay: light.decay,
+      duration: 1,
+    });
+
+    // Color
+    const color = new THREE.Color(light.color);
+    gsap.to(this.pointLight.instance.color, {
+      r: color.r,
+      g: color.g,
+      b: color.b,
+      duration: 1,
+    });
+  }
+
+  enterTime() {
+    gsap.to(this.pointLight.instance, {
+      intensity: 0,
+      duration: 1.5,
+    });
+  }
+  leaveTime() {
+    gsap.to(this.pointLight.instance, {
+      intensity: 1,
+      duration: 1.5,
+    });
   }
 }

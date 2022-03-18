@@ -6,9 +6,11 @@ import Wall from "./Wall.js";
 import Human from "./Human.js";
 import Lights from "./Lights.js";
 import Texts from "./Texts.js";
+import BackgroundTime from "./BackgroundTime.js";
+
+import { timesScripts } from "./TimeScripts.js";
 
 import { gsap } from "gsap";
-
 export default class World {
   constructor(_options) {
     this.experience = new Experience();
@@ -17,9 +19,12 @@ export default class World {
     this.textScene = this.experience.textScene;
     this.resources = this.experience.resources;
     this.camera = this.experience.camera;
+    this.debug = this.experience.debug;
 
-    // DOM Elements
-    this.controlTimesEl = document.querySelector(".control-times");
+    if (this.debug) {
+      this.debugFolder = this.debug.addFolder("world");
+      this.setDebugScripts();
+    }
 
     this.resources.on("groupEnd", (_group) => {
       if (_group.name === "base") {
@@ -29,10 +34,13 @@ export default class World {
         this.setHuman();
         this.setLights();
         this.setTexts();
-
-        // this.setIntro();
+        this.setBackgroundTime();
       }
     });
+  }
+
+  setListeners() {
+    this.closeBtn.addEventListener("click", () => this.leaveTime("22H"));
   }
 
   setTriangle() {
@@ -57,10 +65,22 @@ export default class World {
 
   setTexts() {
     this.texts = new Texts();
+  }
 
-    this.texts.on("colorChange", (color) => {
-      this.lights.pointLight.instance.color.set(color);
-    });
+  setBackgroundTime() {
+    this.backgroundTime = new BackgroundTime();
+  }
+
+  // TODO : Move into the specific file≠
+  setDebugScripts() {
+    const activeScript = { value: "22H" };
+    this.debugFolder
+      .add(
+        activeScript,
+        "value",
+        timesScripts.map((el) => el.label)
+      )
+      .onChange((time) => this.onChangeTime(time));
   }
 
   resize() {}
@@ -76,49 +96,10 @@ export default class World {
     if (this.texts) {
       this.texts.update();
     }
-  }
 
-  setIntro() {
-    if (this.triangle) {
-      this.triangle.mesh.position.y = 40;
-      this.triangle.mesh.position.z = -50;
+    if (this.backgroundTime) {
+      this.backgroundTime.update();
     }
-    this.camera.modes.default.instance.lookAt(this.triangle.mesh.position);
-
-    this.lights.pointLight.instance.position.z = 40;
-
-    gsap.to(this.camera.modes.default.instance.position, {
-      z: 20,
-      duration: 5,
-    });
-    gsap.to(this.camera.modes.default.instance.rotation, {
-      x: 0,
-      duration: 5,
-      ease: "power2.inOut",
-      onComplete: () => {
-        this.controlTimesEl.classList.add("active");
-      },
-    });
-
-    gsap.to(this.triangle.mesh.position, {
-      y: 7,
-      z: -50,
-      duration: 5,
-      delay: 3,
-      ease: "power2.out",
-    });
-
-    gsap.to(this.triangle.mesh.rotation, {
-      x: -0.292,
-      duration: 7,
-      delay: 3,
-      ease: "power2.inOut",
-    });
-
-    gsap.to(this.lights.pointLight.instance.position, {
-      z: -28,
-      duration: 10,
-    });
   }
 
   destroy() {}

@@ -33,13 +33,14 @@ export default class Texts extends EventEmitter {
     this.sizes = this.experience.sizes;
     this.time = this.experience.time;
     this.resources = this.experience.resources;
-    this.camera = this.experience.camera.instance;
+    this.camera = this.experience.camera;
 
     this.loader = new FontLoader();
 
     this.textMeshes = [];
     this.mouse = new THREE.Vector2();
     this.activeTimeIndex = null;
+    this.isHovered = false;
 
     // Raycaster
     this.raycaster = new THREE.Raycaster();
@@ -80,7 +81,6 @@ export default class Texts extends EventEmitter {
       },
       depthTest: false,
       needsUpdate: true,
-      // wireframe: true,
     });
     return material;
   }
@@ -97,7 +97,7 @@ export default class Texts extends EventEmitter {
     // Create
     times.forEach((time, i) => {
       const textMesh = new Text();
-      this.scene.add(textMesh);
+      this.camera.group.add(textMesh);
 
       textMesh.text = time.label;
       textMesh.name = i;
@@ -150,6 +150,13 @@ export default class Texts extends EventEmitter {
       });
     });
 
+    // OnClick
+    window.addEventListener("mousedown", () => {
+      if (this.isHovered && this.activeTimeIndex >= 0) {
+        this.trigger("clickTime", [times[this.activeTimeIndex].label]);
+      }
+    });
+
     // Scroll
     window.addEventListener("wheel", (e) => this.updateScroll(e.deltaY));
     this.isAnimating = false;
@@ -163,27 +170,20 @@ export default class Texts extends EventEmitter {
       const max = 1;
 
       textMesh.position.y += deltaY * 0.003;
-
-      // Parallax
-      // if (this.isAnimating) return;
-      // gsap.to(textMesh.position, {
-      //   y: `+=${this.textMeshes.length - index * 0.1}`,
-      //   duration: 2,
-      //   onStart: () => (this.isAnimating = true),
-      // });
-      // gsap.to(textMesh.position, {
-      //   y: `+=0`,
-      //   onComplete: () => (this.isAnimating = false),
-      // });
     });
   }
 
   activeTextMesh(index) {
     const color = new THREE.Color(times[index].color);
-    this.trigger("colorChange", [times[index].color]);
+    this.trigger("changeTime", [times[index].label]);
 
-    // Reset
+    /**
+     * Reset
+     */
     this.textMeshes.forEach((textMesh) => {
+      /**
+       * Reset
+       */
       gsap.killTweensOf([textMesh.material.uniforms.uHover, textMesh]);
       gsap.to(textMesh, {
         fillOpacity: 0.01,
@@ -192,9 +192,7 @@ export default class Texts extends EventEmitter {
         value: 0,
       });
 
-      // Color
       textMesh.strokeColor = color;
-
       gsap.to(textMesh.material.uniforms.uColor.value, {
         r: color.r,
         g: color.g,
@@ -202,6 +200,9 @@ export default class Texts extends EventEmitter {
       });
     });
 
+    /**
+     * Animation
+     */
     const tl = gsap.timeline();
 
     tl.to(this.textMeshes[index].material.uniforms.uHover, {
@@ -240,6 +241,23 @@ export default class Texts extends EventEmitter {
     this.cursorEl.style.transform = `translateY(calc(-100% +  ${offsetCursor * index}px))`;
   }
 
+  enterTime() {
+    this.textMeshes.forEach((textMesh) => {
+      gsap.to(textMesh.position, {
+        x: 10,
+        duration: 2,
+      });
+    });
+  }
+  leaveTime() {
+    this.textMeshes.forEach((textMesh) => {
+      gsap.to(textMesh.position, {
+        x: 3.8,
+        duration: 1,
+      });
+    });
+  }
+
   update() {
     // Update time
     for (const textMesh of this.textMeshes) {
@@ -247,23 +265,27 @@ export default class Texts extends EventEmitter {
     }
 
     // Raycaster
-    this.raycaster.setFromCamera(this.mouse, this.camera);
+    this.raycaster.setFromCamera(this.mouse, this.camera.instance);
 
     const objectsToTest = this.textMeshes;
     const intersects = this.raycaster.intersectObjects(objectsToTest);
 
     if (intersects.length) {
+      this.isHovered = true;
       document.body.style.cursor = "pointer";
     } else {
+      this.isHovered = false;
       document.body.style.cursor = "inherit";
     }
 
-    for (const intersect of intersects) {
-      const index = Number(intersect.object.name);
-      if (index === this.activeTimeIndex) return;
-      this.activeTimeIndex = index;
-      this.activeTimeLine(this.activeTimeIndex);
-      this.activeTextMesh(this.activeTimeIndex);
+    if (!this.debug) {
+      for (const intersect of intersects) {
+        const index = Number(intersect.object.name);
+        if (index === this.activeTimeIndex) return;
+        this.activeTimeIndex = index;
+        this.activeTimeLine(this.activeTimeIndex);
+        this.activeTextMesh(this.activeTimeIndex);
+      }
     }
   }
 }

@@ -4,11 +4,13 @@ import GUI from "lil-gui";
 import Time from "./Utils/Time.js";
 import Sizes from "./Utils/Sizes.js";
 import Stats from "./Utils/Stats.js";
+import Keyboard from "./Utils/Keyboard.js";
 
 import Resources from "./Resources.js";
 import Renderer from "./Renderer.js";
 import Camera from "./Camera.js";
 import World from "./World.js";
+import Animations from "./Animations.js";
 
 import assets from "./assets.js";
 
@@ -31,15 +33,19 @@ export default class Experience {
 
     this.time = new Time();
     this.sizes = new Sizes();
+
     this.setConfig();
     this.setDebug();
     this.setStats();
+    this.setKeyboard();
+
     this.setScene();
     this.setTextScene();
     this.setCamera();
     this.setRenderer();
     this.setResources();
     this.setWorld();
+    this.setAnimations();
 
     this.sizes.on("resize", () => {
       this.resize();
@@ -75,6 +81,10 @@ export default class Experience {
     }
   }
 
+  setKeyboard() {
+    this.keyboard = new Keyboard();
+  }
+
   setScene() {
     this.scene = new THREE.Scene();
   }
@@ -99,6 +109,12 @@ export default class Experience {
 
   setWorld() {
     this.world = new World();
+  }
+
+  setAnimations() {
+    setTimeout(() => {
+      this.animations = new Animations();
+    }, 1000);
   }
 
   update() {

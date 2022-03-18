@@ -16,6 +16,7 @@ export default class Wall {
 
     this.setMaterial();
     this.setModel();
+    this.background();
   }
 
   setMaterial() {
@@ -51,5 +52,15 @@ export default class Wall {
     this.model.group.position.z = -30;
 
     this.scene.add(this.model.group);
+  }
+
+  background() {
+    const geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+    const material = new THREE.MeshBasicMaterial({ color: new THREE.Color("black") });
+    this.background = new THREE.Mesh(geometry, material);
+    this.background.position.y = 10;
+    this.background.position.z = -55;
+    this.background.scale.set(25, 25, 25);
+    this.scene.add(this.background);
   }
 }

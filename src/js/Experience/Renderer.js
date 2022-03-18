@@ -17,6 +17,7 @@ export default class Renderer {
     // Debug
     if (this.debug) {
       this.debugFolder = this.debug.addFolder("renderer");
+      this.debugFolder.close();
     }
 
     this.usePostprocess = true;
@@ -99,7 +100,8 @@ export default class Renderer {
       new THREE.Vector2(this.sizes.width, this.sizes.height),
       0.78,
       0.14,
-      0.914
+      // 0.078
+      0.58
     );
     this.postProcess.unrealBloomPass.enabled = true;
 
