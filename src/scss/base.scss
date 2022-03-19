@@ -9,19 +9,7 @@ $primary-color: rgb(213, 238, 248);
 html,
 body {
   overflow: hidden;
-  // font-family: forma-djr-banner, sans-serif;
-  // font-weight: 700;
-
-  // font-family: condor, sans-serif;
-  // font-weight: 700;
-  // font-style: italic;
-
-  // font-family: alternate-gothic-no-2-d, sans-serif;
-  // font-weight: 400;
-
-  //   font-family: "gover";
-
-  font-family: "league-gothic";
+  font-family: halyard-display;
 }
 
 a {
@@ -53,19 +41,14 @@ a {
 }
 
 h1 {
-  // font-family: forma-djr-banner, sans-serif;
-  // font-weight: 400;
-  font-family: itc-avant-garde-gothic-pro, sans-serif;
-  font-weight: 300;
   position: fixed;
-  top: 0;
+  bottom: 0;
   font-weight: 300;
-  font-size: 14px;
+  font-size: 16px;
   padding: 20px;
   text-transform: uppercase;
   opacity: 1;
-  // letter-spacing: 1.1px;
-  color: #ccc;
+  color: #eee;
   opacity: 0.6;
 }
 
@@ -125,43 +108,6 @@ nav {
     transform: rotate(90deg) translateX(50%);
   }
 }
-.times {
-  // height: 100%;
-  display: flex;
-  display: none;
-  align-items: center;
-  justify-content: flex-end;
-
-  padding-right: 180px;
-
-  font-size: 120px;
-  text-transform: uppercase;
-  overflow: auto;
-
-  ul {
-    list-style: none;
-    margin-top: 50px;
-    margin-bottom: 50px;
-  }
-
-  li {
-    margin-bottom: 10px;
-    text-decoration: none;
-    text-align: right;
-  }
-  a {
-    // opacity: 0.2;
-    color: black;
-    text-shadow: -1px -1px 0 $primary-color, 1px -1px 0 $primary-color, -1px 1px 0 $primary-color,
-      1px 1px 0 $primary-color;
-    transition: color 200ms ease;
-
-    &:hover {
-      color: $primary-color;
-      // opacity: 1;
-    }
-  }
-}
 
 .control-times {
   position: fixed;
@@ -190,6 +136,7 @@ nav {
       margin: 6px 0;
     }
   }
+
   .cursor {
     position: absolute;
     margin-top: 16px;
