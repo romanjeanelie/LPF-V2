@@ -1,5 +1,6 @@
 varying vec2 vUv; 
 uniform float uTime; 
+uniform float uOpacity; 
 uniform sampler2D uTexture; 
 
 vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
@@ -48,10 +49,11 @@ void main(){
     float alpha = cnoise(vec2(vUv.x * 2., uTime * 0.00008));
     alpha += cnoise(vec2(vUv.y * 2., uTime * 0.00008));
 
-    vec4 texture = texture2D(uTexture, distoredUV) * (0.1 + alpha);
+    vec4 texture = texture2D(uTexture, distoredUV) * (0.1 + alpha) * uOpacity;
 
 
 
     gl_FragColor=vec4(texture);
+    // gl_FragColor=vec4(1., 0., 1., 1.);
     // gl_FragColor=vec4(1., 0., 1., alpha);
 }

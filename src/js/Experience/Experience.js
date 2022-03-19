@@ -37,7 +37,6 @@ export default class Experience {
     this.setConfig();
     this.setDebug();
     this.setStats();
-    this.setKeyboard();
 
     this.setScene();
     this.setTextScene();
@@ -46,6 +45,8 @@ export default class Experience {
     this.setResources();
     this.setWorld();
     this.setAnimations();
+
+    this.setKeyboard();
 
     this.sizes.on("resize", () => {
       this.resize();
@@ -71,7 +72,7 @@ export default class Experience {
 
   setDebug() {
     if (this.config.debug) {
-      this.debug = new GUI();
+      this.debug = new GUI({ container: document.querySelector(".gui") });
     }
   }
 
@@ -112,6 +113,7 @@ export default class Experience {
   }
 
   setAnimations() {
+    // TODO Fix (wait every meshes are loaded)
     setTimeout(() => {
       this.animations = new Animations();
     }, 1000);

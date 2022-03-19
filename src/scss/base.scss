@@ -29,6 +29,13 @@ a {
   color: white;
 }
 
+.gui {
+  position: fixed;
+  top: 0;
+  left: 100px;
+  z-index: 1;
+}
+
 .experience {
   position: fixed;
   width: 100vw;

@@ -6,7 +6,6 @@ import Wall from "./Wall.js";
 import Human from "./Human.js";
 import Lights from "./Lights.js";
 import Texts from "./Texts.js";
-import BackgroundTime from "./BackgroundTime.js";
 
 import { timesScripts } from "./TimeScripts.js";
 
@@ -23,7 +22,6 @@ export default class World {
 
     if (this.debug) {
       this.debugFolder = this.debug.addFolder("world");
-      this.setDebugScripts();
     }
 
     this.resources.on("groupEnd", (_group) => {
@@ -34,7 +32,6 @@ export default class World {
         this.setHuman();
         this.setLights();
         this.setTexts();
-        this.setBackgroundTime();
       }
     });
   }
@@ -67,22 +64,6 @@ export default class World {
     this.texts = new Texts();
   }
 
-  setBackgroundTime() {
-    this.backgroundTime = new BackgroundTime();
-  }
-
-  // TODO : Move into the specific file≠
-  setDebugScripts() {
-    const activeScript = { value: "22H" };
-    this.debugFolder
-      .add(
-        activeScript,
-        "value",
-        timesScripts.map((el) => el.label)
-      )
-      .onChange((time) => this.onChangeTime(time));
-  }
-
   resize() {}
 
   update() {
@@ -95,10 +76,6 @@ export default class World {
 
     if (this.texts) {
       this.texts.update();
-    }
-
-    if (this.backgroundTime) {
-      this.backgroundTime.update();
     }
   }
 

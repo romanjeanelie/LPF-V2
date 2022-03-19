@@ -13,8 +13,8 @@ import EventEmitter from "./Utils/EventEmitter";
 
 const times = [
   { label: "22H", link: "www.google.fr", color: 0xd5eef8 },
-  { label: "23H", link: "www.google.fr", color: "#db7139" },
-  { label: "00H", link: "www.google.fr", color: "#e048f4" },
+  { label: "23H", link: "www.google.fr", color: "#94c85f" },
+  { label: "00H", link: "www.google.fr", color: "#81cfee" },
   { label: "01H", link: "www.google.fr", color: "#84e6c0" },
   { label: "02H", link: "www.google.fr", color: "#8490e6" },
   { label: "03H", link: "www.google.fr", color: "#1714d2" },
@@ -153,6 +153,7 @@ export default class Texts extends EventEmitter {
     // OnClick
     window.addEventListener("mousedown", () => {
       if (this.isHovered && this.activeTimeIndex >= 0) {
+        if (this.debug) return;
         this.trigger("clickTime", [times[this.activeTimeIndex].label]);
       }
     });
@@ -278,14 +279,12 @@ export default class Texts extends EventEmitter {
       document.body.style.cursor = "inherit";
     }
 
-    if (!this.debug) {
-      for (const intersect of intersects) {
-        const index = Number(intersect.object.name);
-        if (index === this.activeTimeIndex) return;
-        this.activeTimeIndex = index;
-        this.activeTimeLine(this.activeTimeIndex);
-        this.activeTextMesh(this.activeTimeIndex);
-      }
+    for (const intersect of intersects) {
+      const index = Number(intersect.object.name);
+      if (index === this.activeTimeIndex) return;
+      this.activeTimeIndex = index;
+      this.activeTimeLine(this.activeTimeIndex);
+      this.activeTextMesh(this.activeTimeIndex);
     }
   }
 }

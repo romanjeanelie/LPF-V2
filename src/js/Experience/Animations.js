@@ -16,6 +16,9 @@ export default class Animations {
     this.texts = this.world.texts;
     this.lights = this.world.lights;
     this.triangle = this.world.triangle;
+    this.ground = this.world.ground;
+    this.human = this.world.human;
+    this.wall = this.world.wall;
 
     // DOM Elements
     this.closeBtn = document.getElementById("close-btn");
@@ -23,7 +26,8 @@ export default class Animations {
 
     if (this.debug) {
       this.debugFolder = this.debug.addFolder("Animations");
-      this.debugFolder.close();
+      // this.debugFolder.close();
+      this.setDebug();
     }
 
     this.setListeners();
@@ -94,8 +98,11 @@ export default class Animations {
     const timeScript = timesScripts.filter((el) => el.label === time)[0];
 
     this.lights.enterTime();
-    this.triangle.updateScript(timeScript.triangleOnEnter);
+    this.triangle.enterTime(timeScript.triangleOnEnter);
     this.texts.enterTime();
+    this.ground.enterTime();
+    this.human.enterTime();
+    this.wall.enterTime();
   }
 
   leaveTime(time) {
@@ -105,7 +112,21 @@ export default class Animations {
     const timeScript = timesScripts.filter((el) => el.label === time)[0];
 
     this.lights.updateScript(timeScript.light);
-    this.triangle.updateScript(timeScript.triangle);
+    this.triangle.leaveTime(timeScript.triangle);
     this.texts.leaveTime();
+    this.ground.leaveTime();
+    this.human.leaveTime();
+    this.wall.leaveTime();
+  }
+
+  setDebug() {
+    const activeScript = { value: "22H" };
+    this.debugFolder
+      .add(
+        activeScript,
+        "value",
+        timesScripts.map((el) => el.label)
+      )
+      .onChange((time) => this.onChangeTime(time));
   }
 }

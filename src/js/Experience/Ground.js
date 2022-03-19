@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import Experience from "./Experience";
 
+import { gsap } from "gsap";
+
 export default class Ground {
   constructor() {
     this.experience = new Experience();
@@ -8,6 +10,9 @@ export default class Ground {
     this.scene = this.experience.scene;
     this.time = this.experience.time;
     this.resources = this.experience.resources;
+    this.world = this.experience.world;
+
+    this.ground = this.world.ground;
 
     if (this.debug) {
       this.debugFolder = this.debug.addFolder("ground");
@@ -45,10 +50,9 @@ export default class Ground {
   }
 
   setModel() {
-    this.model = {};
     // // Add the model
-    this.model.group = this.resources.items.ground.scene;
-    this.model.group.traverse((child) => {
+    this.model = this.resources.items.ground.scene;
+    this.model.traverse((child) => {
       if (child.type === "Mesh") {
         child.material = this.material;
 
@@ -58,8 +62,24 @@ export default class Ground {
       }
     });
 
-    this.model.group.position.z = -30;
+    this.model.position.z = -30;
 
-    this.scene.add(this.model.group);
+    this.scene.add(this.model);
+  }
+
+  enterTime() {
+    gsap.to(this.model.position, {
+      y: -10,
+      duration: 1,
+      ease: "power2.in",
+    });
+  }
+
+  leaveTime() {
+    gsap.to(this.model.position, {
+      y: 0,
+      duration: 2,
+      ease: "power2.out",
+    });
   }
 }

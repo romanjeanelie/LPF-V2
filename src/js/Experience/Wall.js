@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import Experience from "./Experience";
 
+import { gsap } from "gsap";
+
 export default class Wall {
   constructor() {
     this.experience = new Experience();
@@ -16,7 +18,7 @@ export default class Wall {
 
     this.setMaterial();
     this.setModel();
-    this.background();
+    this.setBackground();
   }
 
   setMaterial() {
@@ -38,23 +40,20 @@ export default class Wall {
   }
 
   setModel() {
-    this.model = {};
-
-    // Add the model
-    this.model.group = this.resources.items.wall.scene;
-    this.model.group.traverse((child) => {
+    this.model = this.resources.items.wall.scene;
+    this.model.traverse((child) => {
       if (child.type === "Mesh") {
         child.material = this.material;
       }
     });
-    this.model.group.scale.set(2, 2, 2);
-    this.model.group.position.y = 3;
-    this.model.group.position.z = -30;
+    this.model.scale.set(2, 2, 2);
+    this.model.position.y = 3;
+    this.model.position.z = -30;
 
-    this.scene.add(this.model.group);
+    this.scene.add(this.model);
   }
 
-  background() {
+  setBackground() {
     const geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
     const material = new THREE.MeshBasicMaterial({ color: new THREE.Color("black") });
     this.background = new THREE.Mesh(geometry, material);
@@ -62,5 +61,20 @@ export default class Wall {
     this.background.position.z = -55;
     this.background.scale.set(25, 25, 25);
     this.scene.add(this.background);
+  }
+
+  enterTime() {
+    gsap.to(this.model.position, {
+      z: -60,
+      duration: 1,
+    });
+  }
+
+  leaveTime() {
+    gsap.to(this.model.position, {
+      z: -30,
+      duration: 2,
+      ease: "power2.out",
+    });
   }
 }

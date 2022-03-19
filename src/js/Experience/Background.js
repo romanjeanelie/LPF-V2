@@ -32,7 +32,7 @@ export default class Background {
     this.mesh.scale.set(60, 30, 1);
 
     this.mesh.position.y = 9;
-    this.mesh.position.z = -70;
+    this.mesh.position.z = -90;
 
     // this.mesh.rotation.x = -1.5;
     this.scene.add(this.mesh);

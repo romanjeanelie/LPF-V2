@@ -1,3 +1,5 @@
+import Experience from "../Experience";
+
 import EventEmitter from "./EventEmitter";
 import { areEqual } from "../../utils";
 
@@ -9,11 +11,18 @@ export default class Keyboard extends EventEmitter {
   constructor() {
     super();
 
+    this.experience = new Experience();
+    this.camera = this.experience.camera;
+
+    // DOM Elements
+    this.contentEl = document.querySelector(".content");
+
     this.keysPressed = [];
     this.shortcuts = [
       { keys: ["Control", "c"], command: "copyCamera" },
       { keys: ["Control", "l"], command: "copyLights" },
       { keys: ["Control", "t"], command: "copyTriangle" },
+      { keys: ["Shift", "C"], command: "toggleCameraMode" },
     ];
 
     this.setListeners();
@@ -41,6 +50,9 @@ export default class Keyboard extends EventEmitter {
             break;
           case "copyTriangle":
             this.copyTriangle();
+            break;
+          case "toggleCameraMode":
+            this.toggleCameraMode();
             break;
         }
       }
@@ -119,5 +131,16 @@ export default class Keyboard extends EventEmitter {
 
     console.log("/// COPY TRIANGLE ///", triangleToCopy, "////////");
     navigator.clipboard.writeText(triangleToCopy);
+  }
+
+  toggleCameraMode() {
+    if (this.camera.mode === "debug") {
+      this.camera.mode = "default";
+      this.contentEl.style.pointerEvents = "auto";
+    } else {
+      this.camera.mode = "debug";
+      this.contentEl.style.pointerEvents = "none";
+    }
+    console.log("///////// CHANGE CAMERA MODE", this.camera.mode, this.contentEl.style.pointerEvents);
   }
 }
